@@ -5,7 +5,7 @@ export { default as amazon } from "./amazon.png";
 export { default as jumia } from "./jumia.png";
 export { default as zawadi } from "./zawadi.png";
 
-export { default as logo } from "./logo.png";
+export { default as logo } from "./logo.jpg";
 
 //analysis section images
 export { default as prof } from "./prof.png";
