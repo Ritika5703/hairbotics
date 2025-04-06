@@ -4,13 +4,13 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route index element={<Navbar />}></Route>
+        <Route index element={<Home />}></Route>
       </Routes>
     </Router>
   );
