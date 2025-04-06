@@ -4,7 +4,7 @@ import HeroSection from "../components/HeroSection";
 import Navbar from "../components/Navbar";
 import CompaniesSection from "../components/CompaniesSection";
 import PaymentPlansSection from "../components/PaymentPlansSection";
-// import Footer from "../components/Footer";
+import Footer from "../components/Footer";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Home: React.FC = () => {
       <HeroSection />
       <CompaniesSection />
       <PaymentPlansSection />
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
