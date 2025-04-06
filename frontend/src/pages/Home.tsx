@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import HeroSection from "../components/HeroSection";
 import Navbar from "../components/Navbar";
-// import CompaniesSection from "../components/CompaniesSection";
+import CompaniesSection from "../components/CompaniesSection";
 // import PaymentPlansSection from "../components/PaymentPlansSection";
 // import Footer from "../components/Footer";
 
@@ -13,8 +13,8 @@ const Home: React.FC = () => {
     <div className="min-h-screen bg-gray-900">
       <Navbar />
       <HeroSection />
-      {/* <CompaniesSection />
-      <PaymentPlansSection />
+      <CompaniesSection />
+      {/* <PaymentPlansSection />
       <Footer /> */}
     </div>
   );
