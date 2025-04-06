@@ -6,8 +6,6 @@ import { loadStripe } from "@stripe/stripe-js";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const PaymentPlansSection = () => {
-  const [billingCycle, setBillingCycle] = useState("monthly");
-
   const plans = [
     {
       name: "Freelancer",
@@ -25,7 +23,7 @@ const PaymentPlansSection = () => {
         "Advanced analytics",
         "Priority email support",
       ],
-      popular: true, // Flag to highlight this plan
+      popular: true,
     },
     {
       name: "Enterprise",
@@ -57,7 +55,7 @@ const PaymentPlansSection = () => {
         }
       );
 
-      if (response.data && response.data.url) {
+      if (response.data?.url) {
         window.location.href = response.data.url;
       } else {
         console.error("Failed to retrieve checkout URL.");
@@ -68,42 +66,45 @@ const PaymentPlansSection = () => {
   };
 
   return (
-    <section className="bg-gray-100 py-16 px-6">
-      <h3 className="text-3xl font-semibold text-center mb-4">
+    <section className="bg-gray-100 py-20 px-6">
+      <h3 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-800">
         Pricing plans for teams of all sizes
       </h3>
-      <p className="text-center text-gray-500 mb-8">
-        Choose an affordable plan that’s packed with the best features for
-        engaging your audience, creating customer loyalty and driving sales.
+      <p className="text-center text-gray-500 max-w-2xl mx-auto mb-12">
+        Choose an affordable plan packed with the best features for engaging
+        your audience, creating customer loyalty, and driving sales.
       </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`rounded-lg shadow-lg p-8 text-center border-2 ${
+            className={`relative rounded-2xl shadow-xl p-8 text-center border-2 transition-all duration-300 transform hover:scale-105 ${
               plan.popular
-                ? "border-red-500 bg-red-50"
+                ? "border-green-600 bg-green-50"
                 : "border-gray-200 bg-white"
             }`}
           >
             {plan.popular && (
-              <span className="text-sm font-semibold text-red-600 bg-red-200 rounded-full px-3 py-1 inline-block mb-3">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-sm font-semibold text-white bg-green-500 px-4 py-1 rounded-full shadow-md">
                 Most Popular
               </span>
             )}
-            <h4 className="font-bold text-lg text-gray-700 mb-2">
+            <h4 className="text-xl font-semibold text-gray-800 mb-2">
               {plan.name}
             </h4>
-            <p className="text-grey-500 text-sm mb-4">{plan.description}</p>
-            <p className="text-4xl font-bold text-gray-800 mb-6">
-              ${plan.amount / 100}{" "}
-              <span className="text-lg text-gray-500">/month</span>
+            <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
+            <p className="text-4xl font-extrabold text-gray-900 mb-6">
+              ${plan.amount / 100}
+              <span className="text-base text-gray-500 font-medium">
+                {" "}
+                /month
+              </span>
             </p>
 
-            <ul className="text-left text-gray-700 mb-6 space-y-2">
-              {plan.features.map((feature, index) => (
-                <li key={index} className="flex items-center">
+            <ul className="text-left text-gray-700 mb-6 space-y-3">
+              {plan.features.map((feature, idx) => (
+                <li key={idx} className="flex items-center">
                   <FaCheckCircle className="text-green-500 mr-2" />
                   {feature}
                 </li>
@@ -111,10 +112,10 @@ const PaymentPlansSection = () => {
             </ul>
 
             <button
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg transition duration-200"
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-medium px-6 py-3 rounded-lg transition duration-200 shadow-sm"
               onClick={() => handleCheckout(plan)}
             >
-              {plan.name === "Starup" ? "Get Started" : "Buy Now"}
+              {plan.name === "Startup" ? "Get Started" : "Buy Now"}
             </button>
           </div>
         ))}

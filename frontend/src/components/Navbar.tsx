@@ -20,12 +20,12 @@ const Navbar: React.FC = () => {
           {isLogoLoaded ? (
             <img
               src={logo}
-              alt="Beauty"
+              alt="Hairbotics"
               onError={() => setIsLogoLoaded(false)}
-              className="w-16 h-16 md:w-20 md:h-20"
+              className="w-16 h-16 md:w-20 md:h-20 object-contain"
             />
           ) : (
-            "Beauty"
+            "Hairbotics"
           )}
         </Link>
 

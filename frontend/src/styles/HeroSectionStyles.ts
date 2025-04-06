@@ -1,11 +1,14 @@
 const HeroSectionStyles = {
   section:
-    "relative flex flex-col md:flex-row items-center bg-white text-black p-8 min-h-screen",
-  textContainer: "md:w-1/2 p-6 z-10 text-center md:text-left",
-  title: "text-3xl sm:text-5xl font-bold mb-4",
-  description: "text-lg md:text-xl mb-6",
+    "relative flex flex-col md:flex-row items-center bg-white text-black px-6 md:px-20 py-24 min-h-screen",
+  textContainer:
+    "md:w-1/2 z-10 text-center md:text-left space-y-6 animate-fade-in",
+  title:
+    "text-4xl sm:text-6xl font-bold leading-tight tracking-tight text-gray-800",
+  description:
+    "text-lg sm:text-xl text-gray-600 max-w-md mx-auto md:mx-0 leading-relaxed",
   getStartedButton:
-    "bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600",
+    "bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition duration-300 ease-in-out shadow-md inline-flex items-center space-x-2",
 
   // Moved gradientCircle into canvasContainer to ensure it’s behind the 3D model
   canvasContainer:

@@ -5,6 +5,7 @@ import * as THREE from "three";
 import girl from "../models/source/girl.glb";
 import textureImage from "../models/textures/textureImage.png";
 import styles from "../styles/HeroSectionStyles";
+import { FaArrowRight } from "react-icons/fa";
 
 const BlowDryer: React.FC = () => {
   const { scene } = useGLTF(girl);
@@ -39,7 +40,9 @@ const HeroSection: React.FC = () => {
           Improving your hair so you can get the best results for your hair.
           Also, you get the results quickly.
         </p>
-        <button className={styles.getStartedButton}>Get Started</button>
+        <button className={styles.getStartedButton}>
+          Get Started <FaArrowRight className="ml-1" />
+        </button>
       </div>
       <div className={styles.canvasContainer}>
         <div className={styles.gradientCircle}></div>
