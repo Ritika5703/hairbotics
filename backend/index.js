@@ -1,54 +1,38 @@
 import express from "express";
 import cors from "cors";
-import Stripe from "stripe";
 import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+
+// Routes
+import userRoutes from "./routes/userRoutes.js";
+import imageRoutes from "./routes/imageRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 dotenv.config();
-
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
-// Initialize Stripe with your secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Connect to MongoDB
+connectDB();
+// ✅ Built-in middleware to handle large JSON bodies
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Stripe Payment Route
-app.post("/create-checkout-session", async (req, res) => {
-  const { planId, planAmount, planCurrency } = req.body;
+// Base API Routes
+app.use("/api/users", userRoutes);
+app.use("/api/images", imageRoutes);
+app.use("/api/payments", paymentRoutes);
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "subscription",
-      line_items: [
-        {
-          price_data: {
-            currency: planCurrency || "usd",
-            product_data: {
-              name: planId,
-            },
-            unit_amount: planAmount,
-            recurring: {
-              interval: "month",
-            },
-          },
-          quantity: 1,
-        },
-      ],
-      success_url: "http://localhost:3000/success",
-      cancel_url: "http://localhost:3000/cancel",
-    });
-
-    res.json({ url: session.url });
-  } catch (error) {
-    console.error("Error creating checkout session:", error);
-    res.status(500).json({ error: "Failed to create checkout session" });
-  }
+// Default route
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
