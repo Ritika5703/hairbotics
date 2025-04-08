@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import styles from "../styles/NavbarStyles";
 import { logo } from "../assets/index";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  // const { isSignedIn } = useAuth();
+  const { isSignedIn } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLogoLoaded, setIsLogoLoaded] = useState(true);
 
