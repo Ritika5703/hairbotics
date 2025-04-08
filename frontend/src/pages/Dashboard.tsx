@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import {
   FaHome,
@@ -31,6 +32,25 @@ const Dashboard: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // 💾 Save user to DB
+  useEffect(() => {
+    const saveUserToBackend = async () => {
+      if (user) {
+        try {
+          await axios.post("http://localhost:5000/api/users/create-user", {
+            userId: user.id,
+            email: user.primaryEmailAddress?.emailAddress,
+          });
+          console.log("✅ User saved to backend");
+        } catch (error) {
+          console.error("❌ Error saving user:", error);
+        }
+      }
+    };
+
+    saveUserToBackend();
+  }, [user]);
 
   const maskEmail = (email: string) => {
     const [username, domain] = email.split("@");
@@ -69,7 +89,6 @@ const Dashboard: React.FC = () => {
             </Link>
           </div>
 
-          {/* Navigation Links */}
           <nav className={styles.nav}>
             <Link
               to="/dashboard/analysis"
@@ -106,12 +125,11 @@ const Dashboard: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Sidebar Footer with User Information */}
           <div className={styles.sidebarFooter}>
             <p className={styles.credits}>(Credits: 50)</p>
             <div onClick={toggleCard} className={styles.avatarContainer}>
               <img
-                src={user.profileImageUrl || user.imageUrl || hair}
+                src={user?.profileImageUrl || user?.imageUrl || hair}
                 alt="User Avatar"
                 className={styles.avatarImage}
               />
@@ -126,18 +144,17 @@ const Dashboard: React.FC = () => {
               )}
               <p className={styles.userEmail}>
                 {maskEmail(
-                  user.primaryEmailAddress?.emailAddress || "user@example.com"
+                  user?.primaryEmailAddress?.emailAddress || "user@example.com"
                 )}
               </p>
             </div>
           </div>
 
-          {/* User Info Card */}
           {showCard && user && (
             <div ref={cardRef} className={styles.userCard}>
               <div className={styles.cardHeader}>
                 <img
-                  src={user.profileImageUrl || user.imageUrl || hair}
+                  src={user?.profileImageUrl || user?.imageUrl || hair}
                   alt="User Avatar"
                   className={styles.cardAvatar}
                 />
@@ -158,7 +175,7 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className={styles.mainContent}>
-        <Outlet /> {/* This is where different pages will be rendered */}
+        <Outlet />
       </div>
     </div>
   );
