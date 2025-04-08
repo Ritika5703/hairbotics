@@ -64,7 +64,9 @@ const Dashboard: React.FC = () => {
         >
           <div className={styles.logoContainer}>
             <img src={logo} alt="Logo" className={styles.logoImage} />
-            <span className={styles.logoText}>Hair Analysis</span>
+            <Link to="/" className={styles.logoText}>
+              Hair Analysis
+            </Link>
           </div>
 
           {/* Navigation Links */}

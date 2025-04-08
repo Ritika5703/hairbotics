@@ -1,6 +1,7 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import Tilt from "react-parallax-tilt";
 import { prof, tube1, tube2, tube4, tube5 } from "../assets/index";
-
 import styles from "../styles/AnalysisPageStyles";
 
 const AnalysisPage: React.FC = () => {
@@ -23,7 +24,14 @@ const AnalysisPage: React.FC = () => {
         <img src={tube4} alt="Test tube 3" className={styles.tube3} />
         <img src={tube5} alt="Test tube 4" className={styles.tube4} />
 
-        <img src={prof} alt="Scientist" className={styles.scientistImage} />
+        <Tilt
+          tiltMaxAngleX={15}
+          tiltMaxAngleY={15}
+          scale={1.05}
+          transitionSpeed={1500}
+        >
+          <img src={prof} alt="Scientist" className={styles.scientistImage} />
+        </Tilt>
 
         <button onClick={handleButtonClick} className={styles.startButton}>
           Start Analysis
