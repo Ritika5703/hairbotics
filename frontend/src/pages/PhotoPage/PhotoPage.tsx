@@ -7,15 +7,15 @@ import axios from "axios";
 const PhotoPage: React.FC = () => {
   const [isCameraView, setIsCameraView] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [predictions, setPredictions] = useState<any | null>(null);
+  const [predictions, setPredictions] = useState<any[] | null>(null);
   const [model, setModel] = useState<any | null>(null);
+
   const modelURL =
-    "https://teachablemachine.withgoogle.com/models/655WLkBQN//model.json";
+    "https://teachablemachine.withgoogle.com/models/655WLkBQN/model.json";
   const metadataURL =
-    "https://teachablemachine.withgoogle.com/models/655WLkBQN//metadata.json";
+    "https://teachablemachine.withgoogle.com/models/655WLkBQN/metadata.json";
 
   useEffect(() => {
-    // Load the Teachable Machine model
     const loadModel = async () => {
       const loadedModel = await tmImage.load(modelURL, metadataURL);
       setModel(loadedModel);
@@ -27,32 +27,23 @@ const PhotoPage: React.FC = () => {
   const classifyImage = async (file: File) => {
     if (!model) return;
 
-    const image = document.createElement("img");
-    image.src = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
 
-    image.onload = async () => {
-      const prediction = await model.predict(image);
+    img.onload = async () => {
+      const prediction = await model.predict(img);
       setPredictions(prediction);
 
-      // Prepare data for API request
-      const predictionData = prediction.map((pred: any) => ({
-        className: pred.className,
-        probability: pred.probability,
-      }));
-
-      // Send results to the backend
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/classifications/classify",
-          {
-            imageSrc, // Optional: You can send the imageSrc if needed
-            predictions: predictionData,
-          }
-        );
-
-        console.log("Data successfully sent to the backend:", response.data);
+        await axios.post("http://localhost:5000/api/classifications/classify", {
+          imageSrc,
+          predictions: prediction.map((p: any) => ({
+            className: p.className,
+            probability: p.probability,
+          })),
+        });
       } catch (error) {
-        console.error("Error sending data to the backend:", error);
+        console.error("Error sending data:", error);
       }
     };
   };

@@ -15,6 +15,7 @@ import PhotoPage from "./pages/PhotoPage/PhotoPage";
 import AnalysisPage from "./pages/AnalysisPage";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import ImageHistory from "./pages/ImageHistory";
 
 const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
 
@@ -51,6 +52,7 @@ const App: React.FC = () => {
         <Route path="dashboard" element={<Dashboard />}>
           <Route path="analysis" element={<AnalysisPage />} />
           <Route path="photo" element={<PhotoPage />} />
+          <Route path="/dashboard/history" element={<ImageHistory />} />
         </Route>
       </Routes>
     </Router>

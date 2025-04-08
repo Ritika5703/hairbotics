@@ -91,6 +91,17 @@ const Dashboard: React.FC = () => {
               <FaCamera className={styles.navIcon} />
               <span className={styles.navText}>Take Photo</span>
             </Link>
+            <Link
+              to="/dashboard/history"
+              className={`${styles.navLink} ${
+                location.pathname === "/dashboard/history"
+                  ? styles.activeLink
+                  : ""
+              }`}
+            >
+              <FaHistory className={styles.navIcon} />
+              <span className={styles.navText}>Image History</span>
+            </Link>
           </nav>
 
           {/* Sidebar Footer with User Information */}
