@@ -5,13 +5,18 @@ import ImageUploader from "./ImageUploader";
 import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
 
+interface Prediction {
+  className: string;
+  probability: number;
+}
+
 const PhotoPage: React.FC = () => {
   const [isCameraView, setIsCameraView] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [predictions, setPredictions] = useState<any[] | null>(null);
-  const [model, setModel] = useState<any | null>(null);
+  const [predictions, setPredictions] = useState<Prediction[] | null>(null);
+  const [model, setModel] = useState<tmImage.CustomMobileNet | null>(null);
 
-  const { user } = useUser(); // 👈 Get Clerk user
+  const { user } = useUser();
 
   const modelURL =
     "https://teachablemachine.withgoogle.com/models/655WLkBQN/model.json";
@@ -28,27 +33,23 @@ const PhotoPage: React.FC = () => {
   }, []);
 
   const classifyImage = async (file: File) => {
-    if (!model || !imageSrc || !user?.id) return;
-    console.log("test");
+    if (!model || !user?.id) return;
 
     const img = new Image();
     img.src = URL.createObjectURL(file);
 
     img.onload = async () => {
-      const prediction = await model.predict(img);
-      setPredictions(prediction);
-      console.log("Test");
-
-      // Extract top prediction
-      const topPrediction = prediction.reduce((prev, curr) =>
-        curr.probability > prev.probability ? curr : prev
-      );
-      console.log("test-try");
-
       try {
+        const prediction = await model.predict(img);
+        setPredictions(prediction);
+
+        const topPrediction = prediction.reduce((prev, curr) =>
+          curr.probability > prev.probability ? curr : prev
+        );
+
         await axios.post("http://localhost:5000/api/images/classify", {
           userId: user.id,
-          imageUrl: imageSrc, // base64 or url depending on usage
+          imageUrl: imageSrc,
           prediction: {
             label: topPrediction.className,
             confidence: Math.round(topPrediction.probability * 100),
@@ -57,8 +58,12 @@ const PhotoPage: React.FC = () => {
 
         console.log("✅ Image classified and saved");
       } catch (error) {
-        console.error("❌ Error sending data:", error);
+        console.error("❌ Error during classification:", error);
       }
+    };
+
+    img.onerror = () => {
+      alert("Failed to load the image. Try another one.");
     };
   };
 
