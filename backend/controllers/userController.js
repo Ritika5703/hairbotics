@@ -1,28 +1,37 @@
-import User from "../models/User";
+import User from "../models/User.js";
 
 // Create a new user
 export const createUser = async (req, res) => {
-  const { userId, email } = req.body;
+  const { clerkId, email, userId } = req.body;
 
-  if (!userId || !email) {
-    return res.status(400).json({ message: "Missing user data" });
+  console.log("Received data:", req.body);
+
+  if (!clerkId) {
+    return res.status(400).json({ error: "clerkId is required" });
   }
 
   try {
-    // Check if user exists
-    const existingUser = await User.findOne({ userId });
+    // Attempt to find or create the user
+    const existingUser = await User.findOneAndUpdate(
+      { $or: [{ clerkId }, { email }] }, // Search by clerkId or email
+      { clerkId, email, userId }, // Update if found
+      { upsert: true, new: true } // Create if not found
+    );
 
-    if (!existingUser) {
-      // Save to MongoDB
-      const newUser = new User({ userId, email });
-      await newUser.save();
-      console.log("✅ User saved to MongoDB");
-      return res.status(201).json({ message: "User created" });
-    } else {
-      return res.status(200).json({ message: "User already exists" });
-    }
+    console.log("✅ User processed (updated or created)", existingUser);
+
+    return res.status(201).json({ message: "User processed successfully" });
   } catch (error) {
-    console.error("Error creating user:", error);
-    return res.status(500).json({ message: "Failed to create user" });
+    console.error("Error creating/updating user:", error);
+
+    // Specific check for MongoDB duplicate key error
+    if (error.code === 11000) {
+      return res.status(409).json({
+        error:
+          "Duplicate key error, user already exists with this email or clerkId",
+      });
+    }
+
+    return res.status(500).json({ error: "Error creating user" });
   }
 };

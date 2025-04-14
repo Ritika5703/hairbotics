@@ -11,8 +11,10 @@ import {
 import { useUser } from "@clerk/clerk-react";
 import { logo, hair } from "../assets/index";
 import styles from "../styles/DashboardStyles";
+import SyncUserToDB from "../components/SyncUserToDB";
 
 const Dashboard: React.FC = () => {
+  const { isSignedIn } = useUser();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const { user } = useUser();
@@ -34,23 +36,24 @@ const Dashboard: React.FC = () => {
   }, []);
 
   // 💾 Save user to DB
-  useEffect(() => {
-    const saveUserToBackend = async () => {
-      if (user) {
-        try {
-          await axios.post("http://localhost:5000/api/users/create-user", {
-            userId: user.id,
-            email: user.primaryEmailAddress?.emailAddress,
-          });
-          console.log("✅ User saved to backend");
-        } catch (error) {
-          console.error("❌ Error saving user:", error);
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const saveUserToBackend = async () => {
+  //     if (user) {
+  //       try {
+  //         await axios.post("http://localhost:5000/api/users/create-user", {
+  //           userId: user.id,
+  //           clerkId: user.id,
+  //           email: user.primaryEmailAddress?.emailAddress,
+  //         });
+  //         console.log("✅ User saved to backend");
+  //       } catch (error) {
+  //         console.error("❌ Error saving user:", error);
+  //       }
+  //     }
+  //   };
 
-    saveUserToBackend();
-  }, [user]);
+  //   saveUserToBackend();
+  // }, [user]);
 
   const maskEmail = (email: string) => {
     const [username, domain] = email.split("@");
@@ -66,6 +69,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* Mobile Toggle Button */}
+      {isSignedIn && <SyncUserToDB />}
       {!isHomePage && (
         <div className={styles.mobileToggle}>
           <span className={styles.mobileTitle}>Hair Analysis</span>

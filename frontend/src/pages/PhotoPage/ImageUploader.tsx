@@ -29,14 +29,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = async (file: File) => {
+    console.log(credits);
+
     if (credits < 1) return;
+    console.log("imageuploader");
 
     const reader = new FileReader();
     reader.onload = async () => {
       const result = reader.result as string;
       setImageSrc(result);
       setIsLoading(true);
+      console.log("first");
+
       await classifyImage(file);
+      console.log("second");
+
       setCredits((prev) => Math.max(prev - 25, 0));
       setIsLoading(false);
     };
@@ -97,14 +104,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               <img src={imageSrc} alt="Uploaded" className={styles.image} />
             ) : (
               <img
-                src="https://via.placeholder.com/200"
+                src="https://www.marionstate.bank/wp-content/uploads/2024/02/AdobeStock_517535712-scaled.jpeg"
                 alt="Placeholder"
                 className={styles.image}
               />
             )}
             <h2 className={styles.title}>Upload or Capture an Image</h2>
             <p className={styles.description}>
-              We'll analyze your image and return AI-based predictions
+              We'll analyze image and return AI-based predictions
             </p>
             <p className={styles.credits}>Credits: {credits}</p>
 

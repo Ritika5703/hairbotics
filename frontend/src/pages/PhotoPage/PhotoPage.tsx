@@ -29,6 +29,7 @@ const PhotoPage: React.FC = () => {
 
   const classifyImage = async (file: File) => {
     if (!model || !imageSrc || !user?.id) return;
+    console.log("test");
 
     const img = new Image();
     img.src = URL.createObjectURL(file);
@@ -36,11 +37,13 @@ const PhotoPage: React.FC = () => {
     img.onload = async () => {
       const prediction = await model.predict(img);
       setPredictions(prediction);
+      console.log("Test");
 
       // Extract top prediction
       const topPrediction = prediction.reduce((prev, curr) =>
         curr.probability > prev.probability ? curr : prev
       );
+      console.log("test-try");
 
       try {
         await axios.post("http://localhost:5000/api/images/classify", {
