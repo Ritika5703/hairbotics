@@ -29,25 +29,20 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = async (file: File) => {
-    console.log(credits);
-
+    setIsLoading(true);
     if (credits < 1) return;
-    console.log("imageuploader");
 
     const reader = new FileReader();
     reader.onload = async () => {
       const result = reader.result as string;
       setImageSrc(result);
-      setIsLoading(true);
-      console.log("first");
 
       await classifyImage(file);
-      console.log("second");
 
       setCredits((prev) => Math.max(prev - 25, 0));
-      setIsLoading(false);
     };
     reader.readAsDataURL(file);
+    setIsLoading(false);
   };
 
   const handleInputClick = () => {
@@ -56,6 +51,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   const handleRetry = () => {
     setImageSrc(null);
+    setShowModel(false);
   };
 
   const handleBuyHairProducts = () => {
@@ -111,7 +107,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             )}
             <h2 className={styles.title}>Upload or Capture an Image</h2>
             <p className={styles.description}>
-              We'll analyze image and return AI-based predictions
+              We'll analyze the image and return AI-based predictions
             </p>
             <p className={styles.credits}>Credits: {credits}</p>
 
@@ -152,7 +148,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           </div>
 
           {isLoading && (
-            <p className="mt-4 text-blue-500">Analyzing image...</p>
+            <p className="mt-4 text-blue-500 animate-pulse">
+              Analyzing image...
+            </p>
           )}
 
           {predictions && (
@@ -161,13 +159,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               <ul>
                 {predictions.map((concept, index) => (
                   <li key={index} className={styles.analysisItem}>
-                    {concept.className}: {Math.round(concept.probability * 100)}
-                    %
+                    {concept.className}:{" "}
+                    {Math.round(concept.probability * 100)}%
                   </li>
                 ))}
               </ul>
 
-              {/* Confidence Message */}
               {Math.max(...predictions.map((p) => p.probability)) < 0.6 && (
                 <p className="text-yellow-500 mt-2">
                   Confidence is low. Try a clearer or better-lit image.
