@@ -25,7 +25,7 @@ const AboutHero = () => {
   };
 
   return (
-    <section className="relative py-24 md:py-32 px-6 text-center overflow-hidden">
+    <section className="relative pt-40 md:pt-48 pb-24 md:pb-32 px-6 text-center overflow-hidden">
       {/* Enhanced background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-green-600/90 via-green-500/90 to-green-400/90 z-10"></div>
       <div

@@ -6,7 +6,7 @@ const CompaniesSectionStyles = {
   subtitle: "text-lg text-gray-500 mb-12 max-w-xl mx-auto",
 
   logoGrid:
-    "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 place-items-center z-10 relative",
+    "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 xl:gap-16 place-items-center",
 
   logoCard:
     "backdrop-blur-md bg-white/70 shadow-lg rounded-xl p-4 transition-transform hover:scale-105 hover:shadow-2xl hover:bg-white/90 border border-white/40",

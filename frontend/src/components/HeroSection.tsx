@@ -31,27 +31,29 @@ const BlowDryer: React.FC = () => {
 const HeroSection: React.FC = () => {
   return (
     <section className={styles.section}>
-      <div className={styles.textContainer}>
-        <h2 className={styles.title}>
-          We <span className="text-green-500">Focus</span> On <br /> Fixing Your
-          Hair
-        </h2>
-        <p className={styles.description}>
-          Improving your hair so you can get the best results for your hair.
-          Also, you get the results quickly.
-        </p>
-        <button className={styles.getStartedButton}>
-          Get Started <FaArrowRight className="ml-1" />
-        </button>
-      </div>
-      <div className={styles.canvasContainer}>
-        <div className={styles.gradientCircle}></div>
-        <Canvas>
-          <ambientLight intensity={1} />
-          <directionalLight position={[10, 10, 5]} intensity={0.5} />
-          <BlowDryer />
-          <OrbitControls />
-        </Canvas>
+      <div className="max-w-screen-xl w-full mx-auto flex flex-col-reverse md:flex-row items-center gap-12">
+        <div className={styles.textContainer}>
+          <h2 className={styles.title}>
+            We <span className="text-green-500">Focus</span> On <br /> Fixing
+            Your Hair
+          </h2>
+          <p className={styles.description}>
+            Improving your hair so you can get the best results for your hair.
+            Also, you get the results quickly.
+          </p>
+          <button className={styles.getStartedButton}>
+            Get Started <FaArrowRight className="ml-1" />
+          </button>
+        </div>
+        <div className={styles.canvasContainer}>
+          <div className={styles.gradientCircle}></div>
+          <Canvas>
+            <ambientLight intensity={1} />
+            <directionalLight position={[10, 10, 5]} intensity={0.5} />
+            <BlowDryer />
+            <OrbitControls />
+          </Canvas>
+        </div>
       </div>
     </section>
   );

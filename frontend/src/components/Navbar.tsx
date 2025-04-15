@@ -26,6 +26,10 @@ const Navbar: React.FC = () => {
       ) {
         setIsDropdownOpen(false);
       }
+      // Close mobile menu if open
+      if (!event.composedPath().includes(document.querySelector("nav")!)) {
+        setIsMenuOpen(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
