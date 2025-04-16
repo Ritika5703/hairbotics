@@ -7,6 +7,7 @@ import {
   FaChartLine,
   FaHistory,
   FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import { useUser } from "@clerk/clerk-react";
 import { logo, hair } from "../assets/index";
@@ -82,10 +83,23 @@ const Dashboard: React.FC = () => {
       {/* Sidebar */}
       {!isHomePage && (
         <aside
-          className={`${styles.sidebar} ${
-            showSidebar ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
+          className={`
+          fixed inset-y-0 left-0 w-64 bg-white shadow-md z-40
+          transform ${showSidebar ? "translate-x-0" : "-translate-x-full"}
+          transition-transform duration-300 ease-in-out
+          lg:static lg:translate-x-0 lg:transform-none
+        `}
         >
+          {/* Close button on mobile */}
+          <div className="lg:hidden flex justify-end p-4">
+            <button
+              onClick={toggleSidebar}
+              aria-label="Close menu"
+              className="z-50 p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+            >
+              <FaTimes className="text-2xl text-gray-800" />
+            </button>
+          </div>
           <div className={styles.logoContainer}>
             <img src={logo} alt="Logo" className={styles.logoImage} />
             <Link to="/" className={styles.logoText}>
@@ -179,7 +193,9 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className={styles.mainContent}>
-        <Outlet />
+        <div className="h-full w-full max-w-screen-lg mx-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
