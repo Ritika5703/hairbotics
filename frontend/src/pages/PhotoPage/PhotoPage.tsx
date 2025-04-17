@@ -19,9 +19,9 @@ const PhotoPage: React.FC = () => {
   const { user } = useUser();
 
   const modelURL =
-    "https://teachablemachine.withgoogle.com/models/655WLkBQN/model.json";
+    "https://teachablemachine.withgoogle.com/models/q-XcmC2jK/model.json";
   const metadataURL =
-    "https://teachablemachine.withgoogle.com/models/655WLkBQN/metadata.json";
+    "https://teachablemachine.withgoogle.com/models/q-XcmC2jK/metadata.json";
 
   useEffect(() => {
     const loadModel = async () => {
