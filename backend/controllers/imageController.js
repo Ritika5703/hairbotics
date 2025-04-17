@@ -42,7 +42,11 @@ export const uploadImage = async (req, res) => {
 export const classifyImage = async (req, res) => {
   try {
     const { userId, imageUrl, prediction } = req.body;
-
+    if (!userId || !imageUrl || !prediction) {
+      return res.status(400).json({
+        message: "Missing required fields: userId, imageUrl, or prediction",
+      });
+    }
     const newImage = new Image({
       userId,
       imageUrl,

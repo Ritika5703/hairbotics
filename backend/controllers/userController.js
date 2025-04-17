@@ -35,3 +35,43 @@ export const createUser = async (req, res) => {
     return res.status(500).json({ error: "Error creating user" });
   }
 };
+// GET user by Clerk ID
+export const getUserByClerkId = async (req, res) => {
+  const { clerkId } = req.params;
+  try {
+    const user = await User.findOne({ clerkId });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching user" });
+  }
+};
+// Deduct 25 credits
+export const deductCredits = async (req, res) => {
+  const { clerkId } = req.body;
+
+  try {
+    const user = await User.findOne({ clerkId });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (user.credits < 25)
+      return res.status(403).json({ error: "Not enough credits" });
+
+    user.credits -= 25;
+    await user.save();
+
+    res.status(200).json({ credits: user.credits });
+  } catch (error) {
+    res.status(500).json({ error: "Error deducting credits" });
+  }
+};
+export const getUserCredits = async (req, res) => {
+  const { clerkId } = req.body;
+  try {
+    const user = await User.findOne({ clerkId });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.status(200).json({ credits: user.credits });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching credits" });
+  }
+};

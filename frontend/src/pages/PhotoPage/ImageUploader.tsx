@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { alibaba, amazon, jumia } from "../../assets/index";
 import styles from "../../styles/ImageUploaderStyles";
 import UpgradeCard from "../UpgradeCard";
+import axios from "axios";
+import { useUser } from "@clerk/clerk-react";
 
 interface Prediction {
   className: string;
@@ -14,6 +16,7 @@ interface ImageUploaderProps {
   predictions: Prediction[] | null;
   classifyImage: (file: File) => Promise<void>;
   setIsCameraView: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -27,22 +30,42 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [selectedWebsite, setSelectedWebsite] = useState<string | null>(null);
   const [credits, setCredits] = useState(150);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
+  const isLoadingRef = useRef(false);
 
   const handleFileChange = async (file: File) => {
+    if (!user) return;
+
     setIsLoading(true);
-    if (credits < 1) return;
+    isLoadingRef.current = true;
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const result = reader.result as string;
-      setImageSrc(result);
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/users/deduct-credits",
+        {
+          clerkId: user.id,
+        }
+      );
 
-      await classifyImage(file);
+      if (res.data.credits < 1) {
+        setCredits(0);
+        setIsLoading(false);
+        return;
+      }
 
-      setCredits((prev) => Math.max(prev - 25, 0));
-    };
-    reader.readAsDataURL(file);
-    setIsLoading(false);
+      setCredits(res.data.credits);
+
+      const reader = new FileReader();
+      reader.onload = async () => {
+        setImageSrc(reader.result as string);
+        await classifyImage(file);
+        isLoadingRef.current = false; // Set loading ref to false
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Credit deduction failed", error);
+      setIsLoading(false);
+    }
   };
 
   const handleInputClick = () => {
@@ -89,8 +112,35 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setShowModel(false);
   };
 
+  useEffect(() => {
+    const fetchCredits = async () => {
+      if (!user) return;
+      const res = await axios.post(
+        "http://localhost:5000/api/users/get-credits",
+        {
+          clerkId: user.id,
+        }
+      );
+      setCredits(res.data.credits);
+    };
+    fetchCredits();
+  }, [user]);
+  useEffect(() => {
+    console.log("Loading status:", isLoading); // Check loading status
+  }, [isLoading]);
+
   return (
-    <div className={styles.container}>
+    <div
+      className={`${styles.container} ${
+        isLoading ? "blur-sm pointer-events-none select-none" : ""
+      }`}
+    >
+      {isLoading && (
+        <div className="absolute top-1/2 left-1/2 text-xl font-semibold text-gray-700 z-50">
+          Analyzing image...
+        </div>
+      )}
+
       {credits < 1 ? (
         <UpgradeCard />
       ) : (
@@ -113,10 +163,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
             <div className="space-x-4 mt-4">
               <button
-                className={styles.button}
+                disabled={credits < 25}
+                className={`${styles.button} ${
+                  credits < 25 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 onClick={() => {
                   setIsCameraView(true);
-                  setCredits((prev) => Math.max(prev - 25, 0));
                 }}
               >
                 Use Camera
@@ -147,20 +199,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             </div>
           </div>
 
-          {isLoading && (
-            <p className="mt-4 text-blue-500 animate-pulse">
-              Analyzing image...
-            </p>
-          )}
-
           {predictions && (
             <div className={styles.analysisContainer}>
               <h3 className={styles.analysisTitle}>Analysis Results</h3>
               <ul>
                 {predictions.map((concept, index) => (
                   <li key={index} className={styles.analysisItem}>
-                    {concept.className}:{" "}
-                    {Math.round(concept.probability * 100)}%
+                    {concept.className}: {Math.round(concept.probability * 100)}
+                    %
                   </li>
                 ))}
               </ul>

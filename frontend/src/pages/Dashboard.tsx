@@ -25,6 +25,7 @@ const Dashboard: React.FC = () => {
 
   const toggleSidebar = () => setShowSidebar(!showSidebar);
   const toggleCard = () => setShowCard((prev) => !prev);
+  const [credits, setCredits] = useState(150);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -35,6 +36,18 @@ const Dashboard: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user?.id) {
+        const res = await axios.get(
+          `http://localhost:5000/api/users/${user.id}`
+        );
+        setCredits(res.data.credits);
+      }
+    };
+
+    fetchUserData();
+  }, [user?.id]);
 
   // 💾 Save user to DB
   // useEffect(() => {
@@ -144,7 +157,7 @@ const Dashboard: React.FC = () => {
           </nav>
 
           <div className={styles.sidebarFooter}>
-            <p className={styles.credits}>(Credits: 50)</p>
+            <p className={styles.credits}>Credits: {credits}</p>
             <div onClick={toggleCard} className={styles.avatarContainer}>
               <img
                 src={user?.profileImageUrl || user?.imageUrl || hair}
