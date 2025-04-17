@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { alibaba, amazon, jumia } from "../../assets/index";
 import styles from "../../styles/ImageUploaderStyles";
 import UpgradeCard from "../UpgradeCard";
@@ -25,19 +25,17 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   predictions,
   classifyImage,
   setIsCameraView,
+  setIsLoading,
 }) => {
   const [showModel, setShowModel] = useState(false);
   const [selectedWebsite, setSelectedWebsite] = useState<string | null>(null);
   const [credits, setCredits] = useState(150);
-  const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
-  const isLoadingRef = useRef(false);
 
   const handleFileChange = async (file: File) => {
     if (!user) return;
-
+    // Set loading state in parent component
     setIsLoading(true);
-    isLoadingRef.current = true;
 
     try {
       const res = await axios.post(
@@ -55,11 +53,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
       setCredits(res.data.credits);
 
+      // Process the image file
       const reader = new FileReader();
-      reader.onload = async () => {
-        setImageSrc(reader.result as string);
+      reader.onload = async (e) => {
+        const result = e.target?.result as string;
+        setImageSrc(result);
+
+        // The classifyImage function will manage its own loading state
         await classifyImage(file);
-        isLoadingRef.current = false; // Set loading ref to false
+      };
+      reader.onerror = () => {
+        console.error("Error reading file");
+        setIsLoading(false);
       };
       reader.readAsDataURL(file);
     } catch (error) {
@@ -125,22 +130,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     };
     fetchCredits();
   }, [user]);
-  useEffect(() => {
-    console.log("Loading status:", isLoading); // Check loading status
-  }, [isLoading]);
 
   return (
-    <div
-      className={`${styles.container} ${
-        isLoading ? "blur-sm pointer-events-none select-none" : ""
-      }`}
-    >
-      {isLoading && (
-        <div className="absolute top-1/2 left-1/2 text-xl font-semibold text-gray-700 z-50">
-          Analyzing image...
-        </div>
-      )}
-
+    <div className={styles.container}>
       {credits < 1 ? (
         <UpgradeCard />
       ) : (

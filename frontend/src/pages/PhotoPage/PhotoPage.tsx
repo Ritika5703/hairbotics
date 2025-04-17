@@ -24,15 +24,21 @@ const PhotoPage: React.FC = () => {
   const metadataURL =
     "https://teachablemachine.withgoogle.com/models/q-XcmC2jK/metadata.json";
 
-  // Ref to manage loading state and avoid unnecessary re-renders
-  const isLoadingRef = useRef(false);
-
-  const forceUpdate = () => {}; // Empty function to trigger re-render
-
   useEffect(() => {
     const loadModel = async () => {
-      const loadedModel = await tmImage.load(modelURL, metadataURL);
-      setModel(loadedModel);
+      try {
+        setLoading(true);
+        const loadedModel = await tmImage.load(modelURL, metadataURL);
+        setModel(loadedModel);
+        console.log("✅ Model loaded successfully");
+      } catch (error) {
+        console.error("❌ Failed to load model:", error);
+        alert(
+          "Failed to load image classification model. Please refresh the page."
+        );
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadModel();
@@ -41,43 +47,45 @@ const PhotoPage: React.FC = () => {
   const classifyImage = async (file: File) => {
     if (!model || !user?.id) return;
 
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    setLoading(true); // Start blur
-    isLoadingRef.current = true; // Set loading ref to true
+    try {
+      setLoading(true); // Start loading state
 
-    img.onload = async () => {
-      try {
-        const prediction = await model.predict(img);
-        setPredictions(prediction);
+      // Create an image from the file
+      const img = new Image();
+      const imageUrl = URL.createObjectURL(file);
+      img.src = imageUrl;
 
-        const topPrediction = prediction.reduce((prev, curr) =>
-          curr.probability > prev.probability ? curr : prev
-        );
+      // Wait for the image to load
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error("Failed to load image"));
+      });
+      // Classify the image
+      const prediction = await model.predict(img);
+      setPredictions(prediction);
 
-        await axios.post("http://localhost:5000/api/images/classify", {
-          userId: user.id,
-          imageUrl: img.src,
-          prediction: {
-            label: topPrediction.className,
-            confidence: Math.round(topPrediction.probability * 100),
-          },
-        });
+      // Find the top prediction
+      const topPrediction = prediction.reduce((prev, curr) =>
+        curr.probability > prev.probability ? curr : prev
+      );
 
-        console.log("✅ Image classified and saved");
-      } catch (error) {
-        console.error("❌ Error during classification:", error);
-      } finally {
-        setLoading(false); // Remove blur
-        isLoadingRef.current = false; // Set loading ref to false
-      }
-    };
+      // Save to backend
+      await axios.post("http://localhost:5000/api/images/classify", {
+        userId: user.id,
+        imageUrl: img.src,
+        prediction: {
+          label: topPrediction.className,
+          confidence: Math.round(topPrediction.probability * 100),
+        },
+      });
 
-    img.onerror = () => {
-      alert("Failed to load the image. Try another one.");
+      console.log("✅ Image classified and saved");
+    } catch (error) {
+      console.error("❌ Error during classification:", error);
+      alert("Failed to analyze the image. Please try again.");
+    } finally {
       setLoading(false);
-      isLoadingRef.current = false;
-    };
+    }
   };
   useEffect(() => {
     if (!loading) {
@@ -86,32 +94,36 @@ const PhotoPage: React.FC = () => {
   }, [loading]);
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 flex flex-col items-center justify-center transition duration-300 ${
-        loading ? "blur-sm pointer-events-none" : ""
-      }`}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 flex flex-col items-center justify-center relative">
+      {/* Loading overlay */}
       {loading && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-semibold bg-white/80 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg z-50">
-          🔍 Analyzing image...
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+            <span className="text-lg font-semibold">
+              {model ? "Analyzing image..." : "Loading model..."}
+            </span>
+          </div>
         </div>
       )}
-      {isCameraView ? (
-        <CameraCapturePage
-          setImageSrc={setImageSrc}
-          setIsCameraView={setIsCameraView}
-          classifyImage={classifyImage}
-        />
-      ) : (
-        <ImageUploader
-          imageSrc={imageSrc}
-          setImageSrc={setImageSrc}
-          predictions={predictions}
-          classifyImage={classifyImage}
-          setIsCameraView={setIsCameraView}
-          setIsLoading={setLoading}
-        />
-      )}
+      <div className={loading ? "opacity-50 pointer-events-none" : ""}>
+        {isCameraView ? (
+          <CameraCapturePage
+            setImageSrc={setImageSrc}
+            setIsCameraView={setIsCameraView}
+            classifyImage={classifyImage}
+          />
+        ) : (
+          <ImageUploader
+            imageSrc={imageSrc}
+            setImageSrc={setImageSrc}
+            predictions={predictions}
+            classifyImage={classifyImage}
+            setIsCameraView={setIsCameraView}
+            setIsLoading={setLoading}
+          />
+        )}
+      </div>
     </div>
   );
 };
