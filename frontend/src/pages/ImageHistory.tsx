@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
-
+import axiosInstance from "../api/axiosInstance";
 interface HistoryItem {
   _id: string;
   imageUrl: string;
@@ -22,9 +21,7 @@ const ImageHistory: React.FC = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/images/user/${user?.id}`
-        );
+        const res = await axiosInstance.get(`/api/images/user/${user?.id}`);
         setHistory(res.data);
       } catch (error) {
         console.error("❌ Error fetching history:", error);
@@ -47,7 +44,7 @@ const ImageHistory: React.FC = () => {
     if (!confirm) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/images/${id}`);
+      await axiosInstance.delete(`/api/images/${id}`);
       setHistory((prev) => prev.filter((item) => item._id !== id));
     } catch (error) {
       console.error("❌ Error deleting image:", error);

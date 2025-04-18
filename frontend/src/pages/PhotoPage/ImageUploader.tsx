@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { alibaba, amazon, jumia } from "../../assets/index";
 import styles from "../../styles/ImageUploaderStyles";
 import UpgradeCard from "../UpgradeCard";
-import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import axiosInstance from "../../api/axiosInstance";
 
 interface Prediction {
   className: string;
@@ -38,12 +38,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     setIsLoading(true);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/users/deduct-credits",
-        {
-          clerkId: user.id,
-        }
-      );
+      const res = await axiosInstance.post("/api/users/deduct-credits", {
+        clerkId: user.id,
+      });
 
       if (res.data.credits < 1) {
         setCredits(0);
@@ -120,12 +117,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   useEffect(() => {
     const fetchCredits = async () => {
       if (!user) return;
-      const res = await axios.post(
-        "http://localhost:5000/api/users/get-credits",
-        {
-          clerkId: user.id,
-        }
-      );
+      const res = await axiosInstance.post("/api/users/get-credits", {
+        clerkId: user.id,
+      });
       setCredits(res.data.credits);
     };
     fetchCredits();

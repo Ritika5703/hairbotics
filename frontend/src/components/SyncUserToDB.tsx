@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-react";
-import axios from "axios";
 import { useEffect } from "react";
+import axiosInstance from "../api/axiosInstance";
 
 const SyncUserToDB = () => {
   const { user } = useUser();
@@ -17,8 +17,8 @@ const SyncUserToDB = () => {
 
           console.log("Sending user data to backend:", payload);
 
-          const response = await axios.post(
-            "http://localhost:5000/api/users/create-user",
+          const response = await axiosInstance.post(
+            "/api/users/create-user",
             payload
           );
           console.log("User synced successfully:", response);

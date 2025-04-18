@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import * as tmImage from "@teachablemachine/image";
 import CameraCapturePage from "./CameraCapture";
 import ImageUploader from "./ImageUploader";
-import axios from "axios";
 import { useUser } from "@clerk/clerk-react";
+import axiosInstance from "../../api/axiosInstance";
 
 interface Prediction {
   className: string;
@@ -70,7 +70,7 @@ const PhotoPage: React.FC = () => {
       );
 
       // Save to backend
-      await axios.post("http://localhost:5000/api/images/classify", {
+      await axiosInstance.post("/api/images/classify", {
         userId: user.id,
         imageUrl: img.src,
         prediction: {
