@@ -138,7 +138,7 @@ const Dashboard: React.FC = () => {
             <nav className="space-y-2 sm:space-y-4 flex-1 px-4">
               <Link
                 to="/dashboard/analysis"
-                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${
+                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-green-100 hover:text-gray-900 ${
                   location.pathname === "/dashboard/analysis"
                     ? "bg-green-100 text-gray-900"
                     : ""
@@ -154,7 +154,7 @@ const Dashboard: React.FC = () => {
               </Link>
               <Link
                 to="/dashboard/photo"
-                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${
+                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-green-100 hover:text-gray-900 ${
                   location.pathname === "/dashboard/photo"
                     ? "bg-green-100 text-gray-900"
                     : ""
@@ -170,7 +170,7 @@ const Dashboard: React.FC = () => {
               </Link>
               <Link
                 to="/dashboard/history"
-                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 ${
+                className={`flex items-center py-2 sm:py-2.5 px-3 sm:px-4 rounded transition-colors duration-200 text-gray-700 hover:bg-green-100 hover:text-gray-900 ${
                   location.pathname === "/dashboard/history"
                     ? "bg-green-100 text-gray-900"
                     : ""

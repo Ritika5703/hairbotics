@@ -30,6 +30,13 @@ const PhotoPage: React.FC = () => {
   const metadataURL =
     "https://teachablemachine.withgoogle.com/models/q-XcmC2jK/metadata.json";
 
+  // Add reset functionality
+  const resetAnalysis = () => {
+    setImageSrc(null);
+    setPredictions(null);
+    setSuggestions(null);
+  };
+
   useEffect(() => {
     const loadModel = async () => {
       try {
@@ -48,7 +55,16 @@ const PhotoPage: React.FC = () => {
     };
 
     loadModel();
+
+    // Add event listener for reset
+    window.addEventListener("resetAnalysis", resetAnalysis);
+
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener("resetAnalysis", resetAnalysis);
+    };
   }, []);
+
   // Hair analysis suggestions database
   const hairSuggestionDatabase: Record<string, Suggestion> = {
     healthy_hair: {
@@ -206,6 +222,7 @@ const PhotoPage: React.FC = () => {
     // Return default suggestions if no match found
     return hairSuggestionDatabase.default;
   };
+
   const classifyImage = async (file: File) => {
     if (!model || !user?.id) return;
 

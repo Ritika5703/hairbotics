@@ -11,7 +11,7 @@ const DashboardStyles = {
 
   // Sidebar
   sidebar:
-    "bg-white text-gray-700 w-64 py-4 sm:py-6 px-3 sm:px-4 shadow-md flex flex-col transition-transform duration-300",
+    "bg-white fixed top-0 left-0 text-gray-700 w-64 py-4 sm:py-6 px-3 sm:px-4 shadow-md flex flex-col transition-transform duration-300",
   logoContainer: "flex items-center justify-center py-3 sm:py-4 mb-4 sm:mb-6",
   logoImage: "w-8 h-8 sm:w-10 sm:h-10",
   logoText: "text-xl sm:text-2xl font-bold text-gray-800 ml-3",
