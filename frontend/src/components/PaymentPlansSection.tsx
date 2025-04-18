@@ -1,6 +1,4 @@
-import React, { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import axios from "axios";
 import { loadStripe } from "@stripe/stripe-js";
 import axiosInstance from "../api/axiosInstance";
 

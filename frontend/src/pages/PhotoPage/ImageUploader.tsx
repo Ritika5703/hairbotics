@@ -9,11 +9,18 @@ interface Prediction {
   className: string;
   probability: number;
 }
+interface Suggestion {
+  condition: string;
+  description: string;
+  tips: string[];
+  products: string[];
+}
 
 interface ImageUploaderProps {
   imageSrc: string | null;
   setImageSrc: (src: string | null) => void;
   predictions: Prediction[] | null;
+  suggestions: Suggestion | null;
   classifyImage: (file: File) => Promise<void>;
   setIsCameraView: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +30,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   imageSrc,
   setImageSrc,
   predictions,
+  suggestions,
   classifyImage,
   setIsCameraView,
   setIsLoading,
@@ -80,7 +88,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   };
 
   const handleBuyHairProducts = () => {
-    if (predictions && predictions.length > 0) {
+    if (suggestions) {
+      // Use the suggested condition to search for products
+      const productSearch = encodeURIComponent(
+        suggestions.condition + " hair products"
+      );
+      setSelectedWebsite(productSearch);
+      setShowModel(true);
+    } else if (predictions && predictions.length > 0) {
       const topPrediction = predictions.reduce((prev, current) =>
         prev.probability > current.probability ? prev : current
       );
@@ -141,9 +156,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                 className={styles.image}
               />
             )}
-            <h2 className={styles.title}>Upload or Capture an Image</h2>
+            <h2 className={styles.title}>Hair Analysis Tool</h2>
             <p className={styles.description}>
-              We'll analyze the image and return AI-based predictions
+              Upload or capture an image of your hair for AI-powered analysis
+              and care recommendations
             </p>
             <p className={styles.credits}>Credits: {credits}</p>
 
@@ -185,9 +201,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             </div>
           </div>
 
+          {/* Analysis Results Section */}
           {predictions && (
             <div className={styles.analysisContainer}>
-              <h3 className={styles.analysisTitle}>Analysis Results</h3>
+              <h3 className={styles.analysisTitle}>Hair Analysis Results</h3>
               <ul>
                 {predictions.map((concept, index) => (
                   <li key={index} className={styles.analysisItem}>
@@ -202,16 +219,80 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   Confidence is low. Try a clearer or better-lit image.
                 </p>
               )}
+            </div>
+          )}
+
+          {/* Hair Suggestions Section */}
+          {suggestions && (
+            <div className="bg-blue-50 p-5 rounded-lg border border-blue-100 mt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <svg
+                  className="w-5 h-5 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <h3 className="font-bold text-blue-800 text-lg">
+                  {suggestions.condition}
+                </h3>
+              </div>
+
+              <p className="text-gray-700 mb-4">{suggestions.description}</p>
+
+              <div className="mb-4">
+                <h4 className="font-semibold text-blue-700 mb-2">
+                  Recommended Care Tips:
+                </h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  {suggestions.tips.map((tip, idx) => (
+                    <li key={idx} className="text-gray-700">
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-blue-700 mb-2">
+                  Suggested Products:
+                </h4>
+                <ul className="list-disc pl-5 space-y-1">
+                  {suggestions.products.map((product, idx) => (
+                    <li key={idx} className="text-gray-700">
+                      {product}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               <button
-                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
                 onClick={handleBuyHairProducts}
               >
-                Buy Hair Products
+                Shop For Recommended Products
               </button>
             </div>
           )}
 
+          {/* Buy Products Button (Only show if suggestions aren't shown) */}
+          {predictions && !suggestions && (
+            <button
+              className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              onClick={handleBuyHairProducts}
+            >
+              Buy Hair Products
+            </button>
+          )}
+
+          {/* Shopping Website Modal */}
           {showModel && (
             <div className={styles.modalContainer}>
               <div className={styles.modalContent}>
