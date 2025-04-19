@@ -1,5 +1,6 @@
 const NavbarStyles = {
-  navbar: "bg-white text-black py-2 fixed top-0 left-0 w-full z-30",
+  navbar:
+    "bg-transparent text-black py-2 fixed top-0 left-0 w-full z-30 backdrop-blur-md",
   container:
     "max-w-screen-xl mx-auto flex flex-wrap justify-between items-center px-2 md:px-6",
   logo: "text-2xl font-bold text-green-600 hover:text-green-700 transition-colors duration-300",
