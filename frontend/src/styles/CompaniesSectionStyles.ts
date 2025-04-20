@@ -9,10 +9,9 @@ const CompaniesSectionStyles = {
     "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-10 xl:gap-16 place-items-center",
 
   logoCard:
-    "backdrop-blur-md bg-white/70 shadow-lg rounded-xl p-4 transition-transform hover:scale-105 hover:shadow-2xl hover:bg-white/90 border border-white/40",
+    "backdrop-blur-md bg-white/70 shadow-lg rounded-xl p-4 transition-transform border border-white/40",
 
-  logoImg:
-    "h-12 md:h-16 object-contain grayscale hover:grayscale-0 transition duration-300",
+  logoImg: "h-12 md:h-16 object-contain transition duration-300",
 
   glowEffect:
     "absolute -top-20 -left-20 w-96 h-96 bg-pink-400 rounded-full blur-3xl opacity-30 z-0 animate-pulse",

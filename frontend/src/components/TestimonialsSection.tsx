@@ -4,36 +4,39 @@ import { motion } from "framer-motion";
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      name: "Jessica T.",
-      location: "Los Angeles, CA",
+      name: "Sanskruti T.",
+      location: "Indore, M.P",
       quote:
         "The AI analysis was spot on! I've been using the recommended products for only 3 weeks and already see a huge difference in my curly hair's health.",
       rating: 5,
-      image: "/api/placeholder/100/100",
+      image: "https://www.premadegraphics.com/img_1/23/Female-Avatar-2.png",
     },
     {
-      name: "Michael K.",
-      location: "Chicago, IL",
+      name: "Neel K.",
+      location: "Jamnagar, Gujarat",
       quote:
         "As someone dealing with thinning hair, this app gave me personalized advice that actually worked. My hairline looks noticeably better.",
       rating: 5,
-      image: "/api/placeholder/100/100",
+      image:
+        "https://static.vecteezy.com/system/resources/previews/024/183/535/original/male-avatar-portrait-of-a-young-man-with-glasses-illustration-of-male-character-in-modern-color-style-vector.jpg",
     },
     {
       name: "Priya S.",
-      location: "New York, NY",
+      location: "Mumbai, Maharashtra",
       quote:
         "I was skeptical at first, but the custom routine stopped my excessive hair fall. The AI detected issues my regular stylist missed!",
       rating: 4,
-      image: "/api/placeholder/100/100",
+      image:
+        "https://i.pinimg.com/originals/45/3d/2d/453d2d555a3c6b02610a04b2faee540c.jpg",
     },
     {
-      name: "David L.",
-      location: "Austin, TX",
+      name: "Krishna L.",
+      location: "Dispur, Assam",
       quote:
         "This app helped me understand my hair type better than years of trial and error. The product recommendations were exactly what I needed.",
       rating: 5,
-      image: "/api/placeholder/100/100",
+      image:
+        "https://png.pngtree.com/png-vector/20231014/ourmid/pngtree-man-avatar-clipart-illustration-png-image_10160103.png",
     },
   ];
 
