@@ -6,6 +6,8 @@ import {
   FaLeaf,
   FaRegLightbulb,
 } from "react-icons/fa";
+import mission from "../assets/mission.png";
+import whyChoose from "../assets/whyChoose.png";
 
 const OurMission = () => {
   const featureBoxVariants = {
@@ -65,7 +67,7 @@ const OurMission = () => {
           >
             <div className="aspect-square rounded-full bg-green-100 absolute -z-10 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120%]"></div>
             <img
-              src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-ff60-61f7-94ca-edb4c11945d5/raw?se=2025-04-14T19%3A12%3A13Z&sp=r&sv=2024-08-04&sr=b&scid=a5defb8b-ce42-5e45-a097-bf25b9a9536c&skoid=ae70be19-8043-4428-a990-27c58b478304&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-14T13%3A11%3A33Z&ske=2025-04-15T13%3A11%3A33Z&sks=b&skv=2024-08-04&sig=OorgGLPlynpsfvWkAT9sJvvZdfyG1kzGDwTvtKotyTM%3D"
+              src={mission}
               alt="AI Hair Analysis"
               className="rounded-2xl shadow-2xl relative z-10"
             />
@@ -193,7 +195,7 @@ const OurMission = () => {
 
             <div className="relative">
               <img
-                src="/api/placeholder/800/600"
+                src={whyChoose}
                 alt="Hair Analysis in Action"
                 className="h-full w-full object-cover"
               />
