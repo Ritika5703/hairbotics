@@ -18,6 +18,7 @@ import Home from "./pages/Home";
 import ImageHistory from "./pages/ImageHistory";
 import AboutUs from "./pages/AboutUs";
 import Team from "./pages/Team";
+import PrivacyPolicy from "./components/PrivacyPolicy";
 
 const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
 
@@ -28,6 +29,7 @@ const App: React.FC = () => {
         <Route index element={<Home />}></Route>
         <Route path="/about" element={<AboutUs />}></Route>
         <Route path="/team" element={<Team />}></Route>
+        <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route
           path="/login"
           element={

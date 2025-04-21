@@ -84,7 +84,7 @@ const CallToAction = () => {
               className="flex flex-wrap gap-4"
             >
               <Link
-                to="/get-started"
+                to="/dashboard/analysis"
                 className="bg-white text-green-600 px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-green-50 transition-all duration-300 flex items-center"
               >
                 <span>Get Your Analysis</span>

@@ -19,13 +19,13 @@ const Footer: React.FC = () => {
         {/* Column 2: Navigation links */}
         <div>
           <div className={styles.links}>
-            <Link href="/privacy" className={styles.link}>
+            <Link to="/privacy" className={styles.link}>
               Privacy Policy
             </Link>
-            <Link href="/terms" className={styles.link}>
+            <Link to="/terms" className={styles.link}>
               Terms of Service
             </Link>
-            <Link href="/contact" className={styles.link}>
+            <Link to="/contact" className={styles.link}>
               Contact
             </Link>
           </div>
