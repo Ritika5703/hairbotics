@@ -145,69 +145,90 @@ const AnalysisModal = ({
             )}
           </div>
         </div>
-        <div className="p-4 border-t flex justify-end gap-2">
+        <div className="p-4 border-t border-green-100 flex justify-end gap-3 bg-gradient-to-r from-green-50 to-green-100">
           <button
             onClick={() => {
               const printWindow = window.open("", "_blank");
               if (printWindow) {
                 printWindow.document.write(`
-                  <html>
-                    <head>
-                      <title>Hair Analysis Report</title>
-                      <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        img { max-width: 100%; height: auto; }
-                        h1 { color: #333; }
-                        .container { max-width: 800px; margin: 0 auto; }
-                      </style>
-                    </head>
-                    <body>
-                      <div class="container">
-                        <h1>Hair Analysis Report</h1>
-                        <p><strong>Date:</strong> ${new Date(
-                          item.timestamp
-                        ).toLocaleString()}</p>
-                        <p><strong>Condition:</strong> ${
-                          item.prediction.label
-                        }</p>
-                        <p><strong>Confidence:</strong> ${
-                          item.prediction.confidence
-                        }%</p>
-                        ${
-                          item.suggestions
-                            ? `
-                          <h2>${item.suggestions.condition}</h2>
-                          <p>${item.suggestions.description}</p>
-                          <h3>Recommended Tips:</h3>
-                          <ul>
-                            ${item.suggestions.tips
-                              .map((tip) => `<li>${tip}</li>`)
-                              .join("")}
-                          </ul>
-                          <h3>Recommended Products:</h3>
-                          <ul>
-                            ${item.suggestions.products
-                              .map((product) => `<li>${product}</li>`)
-                              .join("")}
-                          </ul>
-                        `
-                            : ""
-                        }
-                      </div>
-                    </body>
-                  </html>
-                `);
+          <html>
+            <head>
+              <title>Hair Analysis Report</title>
+              <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; padding: 30px; color: #374151; background-color: #f0fdf4; }
+                img { max-width: 100%; height: auto; border-radius: 8px; }
+                h1 { color: #16a34a; text-align: center; font-weight: 600; border-bottom: 2px solid #bbf7d0; padding-bottom: 15px; }
+                h2 { color: #15803d; margin-top: 25px; }
+                h3 { color: #166534; margin-top: 20px; font-size: 18px; }
+                .container { max-width: 800px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 12px; box-shadow: 0 3px 15px rgba(20, 83, 45, 0.1); }
+                p { line-height: 1.6; }
+                ul { padding-left: 20px; }
+                li { margin-bottom: 8px; }
+                .report-date { color: #15803d; font-style: italic; }
+                .highlight { background-color: #dcfce7; padding: 15px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #22c55e; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>Hair Analysis Report</h1>
+                <p class="report-date"><strong>Date:</strong> ${new Date(
+                  item.timestamp
+                ).toLocaleString()}</p>
+                <div class="highlight">
+                  <p><strong>Condition:</strong> ${item.prediction.label}</p>
+                  <p><strong>Confidence:</strong> ${
+                    item.prediction.confidence
+                  }%</p>
+                </div>
+                ${
+                  item.suggestions
+                    ? `
+                  <h2>Your Hair Condition: ${item.suggestions.condition}</h2>
+                  <p>${item.suggestions.description}</p>
+                  <h3>Personalized Recommendations:</h3>
+                  <ul>
+                    ${item.suggestions.tips
+                      .map((tip) => `<li>${tip}</li>`)
+                      .join("")}
+                  </ul>
+                  <h3>Products For Your Hair Type:</h3>
+                  <ul>
+                    ${item.suggestions.products
+                      .map((product) => `<li>${product}</li>`)
+                      .join("")}
+                  </ul>
+                `
+                    : ""
+                }
+              </div>
+            </body>
+          </html>
+        `);
                 printWindow.document.close();
                 printWindow.print();
               }
             }}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded flex items-center gap-1"
+            className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium transition-all duration-300 flex items-center gap-2 shadow-sm"
           >
-            <span>🖨️</span> Print
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
+            </svg>
+            Print Report
           </button>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded"
+            className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md font-medium transition-all duration-300 flex items-center gap-2 border border-gray-200 shadow-sm"
           >
             Close
           </button>
