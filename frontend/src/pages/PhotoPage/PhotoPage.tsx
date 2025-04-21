@@ -229,10 +229,18 @@ const PhotoPage: React.FC = () => {
     try {
       setLoading(true); // Start loading state
       setSuggestions(null); // Clear previous suggestions
+      const imageBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("Failed to convert image to base64"));
+        };
+        reader.readAsDataURL(file);
+      });
       // Create an image from the file
       const img = new Image();
       const imageUrl = URL.createObjectURL(file);
-      img.src = imageUrl;
+      img.src = imageBase64;
 
       // Wait for the image to load
       await new Promise((resolve, reject) => {
