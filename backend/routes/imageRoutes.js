@@ -4,6 +4,8 @@ import {
   uploadImage,
   classifyImage,
   deleteImage,
+  getImageById,
+  updateSuggestions,
 } from "../controllers/imageController.js";
 
 const router = express.Router();
@@ -19,5 +21,11 @@ router.post("/classify", classifyImage);
 
 // Delete an image by ID
 router.delete("/:id", deleteImage);
+
+// Get a specific image by ID
+router.get("/:id", getImageById);
+
+// Update suggestions for an existing image
+router.patch("/:id/suggestions", updateSuggestions);
 
 export default router;
