@@ -1,5 +1,6 @@
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import styles from "../styles/FooterStyles";
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
@@ -18,15 +19,15 @@ const Footer: React.FC = () => {
         {/* Column 2: Navigation links */}
         <div>
           <div className={styles.links}>
-            <a href="/privacy" className={styles.link}>
+            <Link href="/privacy" className={styles.link}>
               Privacy Policy
-            </a>
-            <a href="/terms" className={styles.link}>
+            </Link>
+            <Link href="/terms" className={styles.link}>
               Terms of Service
-            </a>
-            <a href="/contact" className={styles.link}>
+            </Link>
+            <Link href="/contact" className={styles.link}>
               Contact
-            </a>
+            </Link>
           </div>
           {/* Footer bottom copy */}
           <div className={styles.copy}>
