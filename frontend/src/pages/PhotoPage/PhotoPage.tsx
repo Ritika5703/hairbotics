@@ -239,7 +239,7 @@ const PhotoPage: React.FC = () => {
       });
       // Create an image from the file
       const img = new Image();
-      const imageUrl = URL.createObjectURL(file);
+      // const imageUrl = URL.createObjectURL(file);
       img.src = imageBase64;
 
       // Wait for the image to load

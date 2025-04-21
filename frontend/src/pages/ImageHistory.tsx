@@ -2,11 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import axiosInstance from "../api/axiosInstance";
-import {
-  formatImageUrl,
-  useImage,
-  cleanupBlobUrl,
-} from "../utils/imageHelper.ts";
+import { useImage, cleanupBlobUrl } from "../utils/imageHelper.ts";
 
 interface HistoryItem {
   _id: string;
@@ -23,33 +19,6 @@ interface HistoryItem {
   };
   timestamp: string;
 }
-
-// Image component with loading state and error handling
-// const HistoryImage = ({ url, alt = "Image", className = "" }) => {
-//   const { loading, error, url: validUrl } = useImage(url);
-
-//   if (loading) {
-//     return (
-//       <div
-//         className={`bg-gray-100 flex items-center justify-center ${className}`}
-//       >
-//         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
-//       </div>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <div
-//         className={`bg-gray-50 flex items-center justify-center ${className}`}
-//       >
-//         <span className="text-gray-400 text-sm">Image unavailable</span>
-//       </div>
-//     );
-//   }
-
-//   return <img src={validUrl} alt={alt} className={className} loading="lazy" />;
-// };
 
 interface HistoryImageProps {
   url: string;
