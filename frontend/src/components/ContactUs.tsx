@@ -35,7 +35,7 @@ type TeamMember = {
   avatar: string;
   availability: string;
   email: string;
-  bio: string;
+  // bio: string;
 };
 
 type FormState = {
@@ -166,28 +166,20 @@ const ContactUs: React.FC = () => {
 
   const teamMembers: TeamMember[] = [
     {
-      name: "Aanya Sharma",
-      role: "Customer Support Lead",
+      name: "Ritika Mishra",
+      role: "Student",
       avatar: "/api/placeholder/80/80",
       availability: "Available 9am-5pm IST",
-      email: "aanya.sharma@hairbotics.com",
-      bio: "Aanya has 5+ years of experience in customer service and specializes in helping clients find the perfect hair care solutions.",
+      email: "ritikamishra@hairbotics.com",
+      // bio: "Aanya has 5+ years of experience in customer service and specializes in helping clients find the perfect hair care solutions.",
     },
     {
-      name: "Raj Patel",
-      role: "Technical Support",
+      name: "Manisha Mondal",
+      role: "Student",
       avatar: "/api/placeholder/80/80",
       availability: "Available 10am-6pm IST",
       email: "raj.patel@hairbotics.com",
-      bio: "Raj handles all technical inquiries related to our AI hair analyzer app and smart devices.",
-    },
-    {
-      name: "Priya Singh",
-      role: "Partnership Manager",
-      avatar: "/api/placeholder/80/80",
-      availability: "Available 9am-5pm IST",
-      email: "priya.singh@hairbotics.com",
-      bio: "Priya works with salons, stylists, and retailers interested in partnering with Hairbotics.",
+      // bio: "Raj handles all technical inquiries related to our AI hair analyzer app and smart devices.",
     },
   ];
 
@@ -769,7 +761,7 @@ const ContactUs: React.FC = () => {
                   </div>
 
                   <div className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       {teamMembers.map((member, index) => (
                         <div
                           key={member.name}
@@ -791,9 +783,9 @@ const ContactUs: React.FC = () => {
                           <p className="text-xs text-gray-500 mt-2">
                             {member.availability}
                           </p>
-                          <div className="text-xs text-gray-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {/* <div className="text-xs text-gray-600 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             {member.bio}
-                          </div>
+                          </div> */}
                           <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                             <Link
                               to={`mailto:${member.email}`}
