@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { ChevronRight, FileText, Search, X, ChevronUp } from "lucide-react";
+import {
+  ChevronRight,
+  FileText,
+  Search,
+  X,
+  ChevronUp,
+  Menu,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 interface TermsSection {
   id: string;
@@ -19,6 +28,31 @@ const TermsOfService: React.FC = () => {
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [highlightedTerms, setHighlightedTerms] = useState<string[]>([]);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+  const [headerHeight, setHeaderHeight] = useState<number>(0);
+
+  useEffect(() => {
+    // Calculate combined height of navbar and floating header
+    const calculateHeaderHeight = () => {
+      const navbar = document.querySelector("nav") as HTMLElement;
+      const floatingHeader = document.querySelector(
+        ".floating-header"
+      ) as HTMLElement;
+
+      const navbarHeight = navbar ? navbar.offsetHeight : 0;
+      const floatingHeaderHeight = floatingHeader
+        ? floatingHeader.offsetHeight
+        : 0;
+
+      // Add some extra padding for comfort
+      setHeaderHeight(navbarHeight + floatingHeaderHeight + 16);
+    };
+
+    calculateHeaderHeight();
+    window.addEventListener("resize", calculateHeaderHeight);
+
+    return () => window.removeEventListener("resize", calculateHeaderHeight);
+  }, []);
 
   useEffect(() => {
     const handleScroll = (): void => {
@@ -30,9 +64,8 @@ const TermsOfService: React.FC = () => {
       let currentSection = "";
 
       sections.forEach((section) => {
-        // Fix: Cast section to HTMLElement to access offsetTop property
         const htmlElement = section as HTMLElement;
-        const sectionTop = htmlElement.offsetTop - 100;
+        const sectionTop = htmlElement.offsetTop - headerHeight - 50; // Added additional offset
         const sectionHeight = htmlElement.offsetHeight;
         if (
           scrollPosition >= sectionTop &&
@@ -49,7 +82,7 @@ const TermsOfService: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [headerHeight]);
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -78,8 +111,15 @@ const TermsOfService: React.FC = () => {
   const scrollToSection = (sectionId: string): void => {
     const section = document.getElementById(`section-${sectionId}`);
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" });
+      // Adjust scroll position to account for the header height
+      const yOffset = -headerHeight;
+      const y =
+        section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+      window.scrollTo({ top: y, behavior: "smooth" });
       setActiveSection(sectionId);
+      // Close mobile sidebar after selection
+      setMobileSidebarOpen(false);
     }
   };
 
@@ -224,12 +264,15 @@ const TermsOfService: React.FC = () => {
       <div
         id={`section-${section.id}`}
         data-section={section.id}
-        className={`scroll-mt-24 ${
-          isHighlighted ? "bg-green-50/50 -mx-8 px-8 py-6 rounded-lg" : ""
+        style={{ scrollMarginTop: `${headerHeight}px` }}
+        className={`${
+          isHighlighted
+            ? "bg-green-50/50 -mx-4 md:-mx-8 px-4 md:px-8 py-6 rounded-lg"
+            : ""
         }`}
       >
         <h2
-          className="text-2xl font-semibold text-green-700 mb-4"
+          className="text-xl md:text-2xl font-semibold text-green-700 mb-4"
           dangerouslySetInnerHTML={{ __html: titleToDisplay }}
         />
         <p
@@ -241,269 +284,264 @@ const TermsOfService: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Floating Header */}
-      <div className="sticky top-0 z-30 bg-white border-b border-green-100 shadow-sm">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <FileText className="h-5 w-5 text-green-600" />
-            <h1 className="text-lg font-semibold text-green-700">
-              Hairbotics Terms of Service
-            </h1>
-          </div>
+    <>
+      <Navbar />
+      <div className="bg-gray-50 min-h-screen pt-16 md:pt-20">
+        {" "}
+        {/* Add padding to the top to account for navbar */}
+        {/* Floating Header */}
+        <div className="sticky top-16 md:top-20 z-20 bg-white border-b border-green-100 shadow-sm floating-header">
+          <div className="max-w-5xl mx-auto px-4 md:px-6 py-3 md:py-4 flex justify-between items-center">
+            <div className="flex items-center space-x-2">
+              <FileText className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
+              <h1 className="text-base md:text-lg font-semibold text-green-700 truncate">
+                Terms of Service
+              </h1>
+            </div>
 
-          {/* Search Bar */}
-          <div className="relative flex items-center">
-            {!isSearching ? (
+            <div className="flex items-center space-x-2">
+              {/* Mobile - Toggle sidebar button */}
               <button
-                onClick={() => setIsSearching(true)}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-                aria-label="Search terms"
+                onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+                className="md:hidden p-2 rounded-full hover:bg-gray-100 transition-colors"
+                aria-label="Toggle sidebar"
               >
-                <Search className="h-5 w-5 text-gray-600" />
+                <Menu className="h-5 w-5 text-gray-600" />
               </button>
-            ) : (
-              <div className="flex items-center bg-gray-100 rounded-full pl-3 pr-1 py-1">
-                <Search className="h-4 w-4 text-gray-500 mr-2" />
-                <input
-                  type="text"
-                  placeholder="Search terms..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="bg-transparent border-none outline-none w-40 text-sm"
-                  autoFocus
-                />
-                <button
-                  onClick={() => {
-                    setIsSearching(false);
-                    setSearchQuery("");
-                    setHighlightedTerms([]);
-                  }}
-                  className="p-1 rounded-full hover:bg-gray-200 transition-colors"
-                >
-                  <X className="h-4 w-4 text-gray-500" />
-                </button>
+
+              {/* Search Bar */}
+              <div className="relative flex items-center">
+                {!isSearching ? (
+                  <button
+                    onClick={() => setIsSearching(true)}
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Search terms"
+                  >
+                    <Search className="h-5 w-5 text-gray-600" />
+                  </button>
+                ) : (
+                  <div className="flex items-center bg-gray-100 rounded-full pl-3 pr-1 py-1">
+                    <Search className="h-4 w-4 text-gray-500 mr-2" />
+                    <input
+                      type="text"
+                      placeholder="Search terms..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-transparent border-none outline-none w-32 md:w-40 text-sm"
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        setIsSearching(false);
+                        setSearchQuery("");
+                        setHighlightedTerms([]);
+                      }}
+                      className="p-1 rounded-full hover:bg-gray-200 transition-colors"
+                    >
+                      <X className="h-4 w-4 text-gray-500" />
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
+        {/* Main Content Container */}
+        <div className="max-w-5xl mx-auto px-4 md:px-6 py-4 md:py-8">
+          {/* Breadcrumb */}
+          <div className="mb-4 md:mb-6 flex items-center text-xs md:text-sm text-gray-500">
+            <Link to="/" className="hover:text-green-600 transition-colors">
+              Hairbotics
+            </Link>
+            <ChevronRight className="h-3 w-3 md:h-4 md:w-4 mx-1" />
+            <span className="text-green-600 font-medium">Terms of Service</span>
+          </div>
 
-      {/* Main Content Container */}
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        {/* Breadcrumb */}
-        <div className="mb-6 flex items-center text-sm text-gray-500">
-          <a href="#" className="hover:text-green-600 transition-colors">
-            Hairbotics
-          </a>
-          <ChevronRight className="h-4 w-4 mx-1" />
-          <a href="#" className="hover:text-green-600 transition-colors">
-            Legal
-          </a>
-          <ChevronRight className="h-4 w-4 mx-1" />
-          <span className="text-green-600 font-medium">Terms of Service</span>
-        </div>
+          <div className="relative flex flex-col md:flex-row gap-4 md:gap-8">
+            {/* Mobile Sidebar Overlay */}
+            {mobileSidebarOpen && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-30 z-40 md:hidden"
+                onClick={() => setMobileSidebarOpen(false)}
+              />
+            )}
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <aside className="lg:w-64 shrink-0">
-            <div className="bg-white border border-green-100 shadow-lg rounded-2xl p-5 lg:sticky lg:top-24">
-              <div className="mb-4 pb-3 border-b border-green-100">
-                <p className="text-xs text-gray-500">Last Updated</p>
-                <p className="font-medium text-green-700">
-                  {termsData.lastUpdated}
+            {/* Sidebar */}
+            <aside
+              className={`${
+                mobileSidebarOpen
+                  ? "fixed left-0 top-0 h-full z-50 w-64 transform translate-x-0"
+                  : "fixed left-0 top-0 h-full z-50 w-64 transform -translate-x-full"
+              } md:static md:block md:w-64 md:shrink-0 md:transform-none transition-transform duration-300 ease-in-out`}
+            >
+              <div
+                className="bg-white border border-green-100 shadow-lg rounded-r-2xl md:rounded-2xl p-5 h-full md:sticky"
+                style={{ top: `${headerHeight}px` }}
+              >
+                <div className="mb-4 pb-3 border-b border-green-100">
+                  <p className="text-xs text-gray-500">Last Updated</p>
+                  <p className="font-medium text-green-700">
+                    {termsData.lastUpdated}
+                  </p>
+                </div>
+
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-lg font-bold text-green-700">
+                    On this page
+                  </h3>
+                  {/* Close button for mobile */}
+                  <button
+                    className="md:hidden p-1 text-gray-500 hover:text-gray-700"
+                    onClick={() => setMobileSidebarOpen(false)}
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                <div className="max-h-80 md:max-h-96 overflow-y-auto pr-2 space-y-1">
+                  {termsData.sections.map((section) => (
+                    <SectionNavItem
+                      key={section.id}
+                      section={section}
+                      isActive={activeSection === section.id}
+                      isHighlighted={highlightedTerms.includes(section.id)}
+                      onClick={() => scrollToSection(section.id)}
+                    />
+                  ))}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-green-100">
+                  <a
+                    href="#"
+                    className="text-sm flex items-center text-green-600 hover:text-green-800 transition-colors"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Download PDF version
+                  </a>
+                </div>
+              </div>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Header Card */}
+              <div className="relative bg-gradient-to-r from-green-700 to-green-500 text-white px-4 md:px-8 py-8 md:py-12 rounded-xl md:rounded-2xl shadow-lg md:shadow-xl mb-6 md:mb-8 overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 md:w-64 h-32 md:h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
+                <div className="absolute bottom-0 left-0 w-16 md:w-32 h-16 md:h-32 bg-white opacity-5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
+
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 md:mb-4 relative z-10">
+                  Terms of Service
+                </h1>
+                <p className="text-green-50 max-w-lg text-sm md:text-base relative z-10">
+                  These Terms of Service govern your use of Hairbotics and our
+                  services. Please read them carefully before using our
+                  platform.
+                </p>
+                <p className="mt-4 md:mt-6 text-xs md:text-sm text-green-100 relative z-10">
+                  Last updated: {termsData.lastUpdated}
                 </p>
               </div>
 
-              <h3 className="text-lg font-bold text-green-700 mb-4">
-                On this page
-              </h3>
+              {/* Table of Contents (Mobile only) */}
+              <div className="md:hidden mb-6 bg-white rounded-xl p-4 border border-green-100 shadow-sm">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-bold text-green-700">Contents</h3>
+                  <button
+                    className="text-green-600 text-sm font-medium"
+                    onClick={() => setMobileSidebarOpen(true)}
+                  >
+                    Jump to section
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {termsData.sections.slice(0, 3).map((section) => (
+                    <button
+                      key={section.id}
+                      onClick={() => scrollToSection(section.id)}
+                      className="block w-full text-left text-sm px-2 py-1 text-gray-700 hover:text-green-600"
+                    >
+                      {section.title}
+                    </button>
+                  ))}
+                  {termsData.sections.length > 3 && (
+                    <button
+                      className="text-sm text-green-600 font-medium flex items-center px-2 py-1"
+                      onClick={() => setMobileSidebarOpen(true)}
+                    >
+                      View all {termsData.sections.length} sections
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-              <div className="max-h-96 overflow-y-auto pr-2 space-y-1">
+              {/* Introduction */}
+              <div className="bg-white rounded-xl p-4 md:p-8 border border-green-100 shadow-sm md:shadow-md mb-6 md:mb-8">
+                <p className="text-gray-700 text-sm md:text-base">
+                  Welcome to Hairbotics. These Terms of Service ("Terms") govern
+                  your access to and use of our services, including our website,
+                  applications, and other services that link to these Terms
+                  (collectively, the "Services"). By using our Services, you
+                  agree to be bound by these Terms and our Privacy Policy.
+                </p>
+              </div>
+
+              {/* All Sections */}
+              <div
+                id="all-sections"
+                className="bg-white rounded-xl p-4 md:p-8 border border-green-100 shadow-sm md:shadow-md space-y-8 md:space-y-12"
+              >
                 {termsData.sections.map((section) => (
-                  <SectionNavItem
+                  <TermsSectionComponent
                     key={section.id}
                     section={section}
-                    isActive={activeSection === section.id}
                     isHighlighted={highlightedTerms.includes(section.id)}
-                    onClick={() => scrollToSection(section.id)}
+                    searchQuery={searchQuery}
                   />
                 ))}
               </div>
 
-              <div className="mt-6 pt-4 border-t border-green-100">
-                <a
-                  href="#"
-                  className="text-sm flex items-center text-green-600 hover:text-green-800 transition-colors"
-                >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Download PDF version
-                </a>
-              </div>
-            </div>
-          </aside>
-
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Header Card */}
-            <div className="relative bg-gradient-to-r from-green-700 to-green-500 text-white px-8 py-12 rounded-2xl shadow-xl mb-8 overflow-hidden">
-              {/* Decorative elements */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white opacity-5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
-
-              <h1 className="text-3xl md:text-4xl font-bold mb-4 relative z-10">
-                Terms of Service
-              </h1>
-              <p className="text-green-50 max-w-lg relative z-10">
-                These Terms of Service govern your use of Hairbotics and our
-                services. Please read them carefully before using our platform.
-              </p>
-              <p className="mt-6 text-sm text-green-100 relative z-10">
-                Last updated: {termsData.lastUpdated}
-              </p>
-            </div>
-
-            {/* Table of Contents (Mobile only) */}
-            <div className="lg:hidden mb-8 bg-white rounded-xl p-5 border border-green-100 shadow-md">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-green-700">Contents</h3>
-                <button className="text-green-600 text-sm font-medium">
-                  Jump to section
-                </button>
-              </div>
-              <div className="space-y-2">
-                {termsData.sections.slice(0, 3).map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => scrollToSection(section.id)}
-                    className="block w-full text-left text-sm px-2 py-1 text-gray-700 hover:text-green-600"
+              {/* Additional Information Card */}
+              <div className="mt-6 md:mt-8 bg-green-50 border border-green-200 rounded-xl p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-semibold text-green-700 mb-2 md:mb-3">
+                  Have questions about our Terms?
+                </h3>
+                <p className="text-gray-700 text-sm md:text-base mb-4">
+                  If you have any questions or concerns about these Terms,
+                  please don't hesitate to contact our legal team.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center justify-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-sm md:text-base"
                   >
-                    {section.title}
-                  </button>
-                ))}
-                {termsData.sections.length > 3 && (
-                  <button
-                    className="text-sm text-green-600 font-medium flex items-center px-2 py-1"
-                    onClick={() => {
-                      const sectionsEl =
-                        document.getElementById("all-sections");
-                      if (sectionsEl) {
-                        sectionsEl.scrollIntoView({ behavior: "smooth" });
-                      }
-                    }}
+                    Contact Us
+                  </Link>
+                  <Link
+                    to="/privacy"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-green-600 text-green-600 hover:bg-green-50 rounded-lg transition-colors text-sm md:text-base"
                   >
-                    View all {termsData.sections.length} sections
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Introduction */}
-            <div className="bg-white rounded-xl p-8 border border-green-100 shadow-md mb-8">
-              <p className="text-gray-700">
-                Welcome to Hairbotics. These Terms of Service ("Terms") govern
-                your access to and use of our services, including our website,
-                applications, and other services that link to these Terms
-                (collectively, the "Services"). By using our Services, you agree
-                to be bound by these Terms and our Privacy Policy.
-              </p>
-            </div>
-
-            {/* All Sections */}
-            <div
-              id="all-sections"
-              className="bg-white rounded-xl p-8 border border-green-100 shadow-md space-y-12"
-            >
-              {termsData.sections.map((section) => (
-                <TermsSectionComponent
-                  key={section.id}
-                  section={section}
-                  isHighlighted={highlightedTerms.includes(section.id)}
-                  searchQuery={searchQuery}
-                />
-              ))}
-            </div>
-
-            {/* Additional Information Card */}
-            <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-6">
-              <h3 className="text-xl font-semibold text-green-700 mb-3">
-                Have questions about our Terms?
-              </h3>
-              <p className="text-gray-700 mb-4">
-                If you have any questions or concerns about these Terms, please
-                don't hesitate to contact our legal team.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                >
-                  Contact Us
-                </Link>
-                <Link
-                  to="/privacy"
-                  className="inline-flex items-center px-4 py-2 border border-green-600 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                >
-                  View Privacy Policy
-                </Link>
+                    View Privacy Policy
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {/* Scroll to top button */}
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed right-4 md:right-8 bottom-4 md:bottom-8 p-2 md:p-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all z-30"
+            aria-label="Scroll to top"
+          >
+            <ChevronUp className="h-4 w-4 md:h-5 md:w-5" />
+          </button>
+        )}
+        <Footer />
       </div>
-
-      {/* Scroll to top button */}
-      {showScrollTop && (
-        <button
-          onClick={scrollToTop}
-          className="fixed right-8 bottom-8 p-3 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all z-30"
-          aria-label="Scroll to top"
-        >
-          <ChevronUp className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Footer */}
-      <footer className="mt-20 border-t border-green-100 py-8 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-4 md:mb-0">
-              <p className="text-sm text-gray-500">
-                © {new Date().getFullYear()} Hairbotics, Inc. All rights
-                reserved.
-              </p>
-            </div>
-            <div className="flex space-x-6">
-              <a
-                href="#"
-                className="text-sm text-gray-500 hover:text-green-600 transition-colors"
-              >
-                Privacy
-              </a>
-              <a
-                href="#"
-                className="text-sm text-gray-500 hover:text-green-600 transition-colors"
-              >
-                Terms
-              </a>
-              <a
-                href="#"
-                className="text-sm text-gray-500 hover:text-green-600 transition-colors"
-              >
-                Cookie Policy
-              </a>
-              <a
-                href="#"
-                className="text-sm text-gray-500 hover:text-green-600 transition-colors"
-              >
-                Help Center
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </>
   );
 };
 
