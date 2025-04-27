@@ -2,7 +2,7 @@
 
 ## AI-Powered Hair Analysis & Product Recommendation SaaS Platform
 
-![Hairbotics Logo](https://github.com/Ritika5703/hairbotics/raw/main/assets/logo.png)
+![Hairbotics Logo](https://github.com/Ritika5703/hairbotics/blob/08e70a548860b6ecc885e8a5f0a7912068621d6d/frontend/src/assets/logo.png)
 
 ## Overview
 
