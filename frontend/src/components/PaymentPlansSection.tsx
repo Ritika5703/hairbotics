@@ -4,40 +4,54 @@ import axiosInstance from "../api/axiosInstance";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
+type Plan = {
+  name: string;
+  amount: number;
+  description: string;
+  features: string[];
+  popular?: boolean;
+};
 const PaymentPlansSection = () => {
   const plans = [
     {
-      name: "Freelancer",
-      amount: 1500,
+      name: "Basic",
+      amount: 199,
       description:
-        "Perfect for solo entrepreneurs or freelancers starting their journey.",
-      features: ["1 project slot", "Basic analytics", "Email support"],
+        "Ideal for individuals looking to monitor their hair health with occasional analyses.",
+      features: [
+        "5 AI hair analyses/month",
+        "Basic care recommendations",
+        "Email support",
+      ],
     },
     {
-      name: "Startup",
-      amount: 3000,
-      description: "Our most popular plan for small businesses ready to scale.",
+      name: "Premium",
+      amount: 499,
+      description:
+        "Perfect for users serious about tracking and improving their hair care routine.",
       features: [
-        "5 project slots",
-        "Advanced analytics",
+        "Unlimited AI hair analyses",
+        "Advanced care recommendations",
+        "Progress tracking and reports",
         "Priority email support",
       ],
       popular: true,
     },
     {
-      name: "Enterprise",
-      amount: 4800,
+      name: "Professional",
+      amount: 1199,
       description:
-        "Designed for large teams and enterprises with extensive needs.",
+        "Designed for salons, trichologists, or professionals managing multiple clients.",
       features: [
-        "Unlimited project slots",
-        "Complete analytics dashboard",
-        "24/7 dedicated support",
+        "Unlimited analyses",
+        "White-label PDF reports",
+        "Client management dashboard",
+        "Dedicated account support",
       ],
     },
   ];
 
-  const handleCheckout = async (plan) => {
+  const handleCheckout = async (plan: Plan) => {
     const stripe = await stripePromise;
     if (!stripe) {
       console.error("Stripe failed to load");
@@ -48,7 +62,7 @@ const PaymentPlansSection = () => {
       const response = await axiosInstance.post("/create-checkout-session", {
         planId: plan.name,
         planAmount: plan.amount,
-        planCurrency: "usd",
+        planCurrency: "inr",
       });
 
       if (response.data?.url) {
@@ -91,7 +105,7 @@ const PaymentPlansSection = () => {
             </h4>
             <p className="text-gray-500 text-sm mb-4">{plan.description}</p>
             <p className="text-4xl font-extrabold text-gray-900 mb-6">
-              ${plan.amount / 100}
+              ₹{plan.amount}
               <span className="text-base text-gray-500 font-medium">
                 {" "}
                 /month
