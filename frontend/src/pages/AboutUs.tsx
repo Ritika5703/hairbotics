@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import AboutHero from "../components/AboutHeroSection";
 import OurMission from "../components/OurMissionSection";
@@ -10,6 +10,7 @@ import CallToAction from "../components/CallToActionSection";
 import Footer from "../components/Footer";
 
 const AboutUs = () => {
+  const howItWorksRef = useRef<HTMLDivElement>(null);
   // Smooth scroll effect for page navigation
   useEffect(() => {
     window.scrollTo({
@@ -17,11 +18,14 @@ const AboutUs = () => {
       behavior: "smooth",
     });
   }, []);
+  const scrollToHowItWorks = () => {
+    howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="overflow-hidden bg-white">
       <Navbar />
-      <AboutHero />
+      <AboutHero scrollToHowItWorks={scrollToHowItWorks} />
 
       {/* Subtle pattern divider */}
       <div className="w-full h-24 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjZmZmIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiNmMGYwZjAiPjwvcmVjdD4KPC9zdmc+')] opacity-20"></div>
@@ -43,7 +47,9 @@ const AboutUs = () => {
         </svg>
       </div>
 
-      <HowItWorks />
+      <div ref={howItWorksRef}>
+        <HowItWorks />
+      </div>
       <CompanyValues />
       <StatsSection />
       <TestimonialsSection />
