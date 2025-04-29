@@ -21,15 +21,14 @@ import Team from "./pages/Team";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import TermsOfService from "./components/TermsOfService";
 import ContactUs from "./components/ContactUs";
-
 const clerkFrontendApi = import.meta.env.VITE_CLERK_FRONTEND_API;
 
 const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route index element={<Home />}></Route>
-        <Route path="/about" element={<AboutUs />}></Route>
+        <Route index element={<Home />} />
+        <Route path="/about" element={<AboutUs />} />
         <Route path="/team" element={<Team />}></Route>
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
