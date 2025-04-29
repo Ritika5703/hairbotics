@@ -13,7 +13,7 @@ const HeroSectionStyles = {
 
   // Moved gradientCircle into canvasContainer to ensure it’s behind the 3D model
   canvasContainer:
-    "relative w-full md:w-1/2 h-[220px] xsm:h-[280px] sm:h-[350px] md:h-[450px] lg:h-[500px] flex justify-center items-center z-50 mt-10 pb-32",
+    "relative w-full md:w-1/2 h-[200px] xsm:h-[240px] sm:h-[280px] md:h-[500px] lg:h-[450px] flex justify-center items-center z-50 mt-10 pb-20",
 
   gradientCircle: `
       absolute inset-0 w-full h-full rounded-full bg-gradient-to-r from-pink-500 via-yellow-500 to-purple-500 
