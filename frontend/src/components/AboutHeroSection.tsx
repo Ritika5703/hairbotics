@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-const AboutHero = () => {
+type Props = {
+  scrollToHowItWorks: () => void;
+};
+const AboutHero = ({ scrollToHowItWorks }: Props) => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -69,17 +71,17 @@ const AboutHero = () => {
           className="flex flex-col sm:flex-row justify-center gap-4"
         >
           <Link
-            to="/get-started"
+            to="/dashboard/analysis"
             className="bg-white text-green-600 px-8 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-green-50 transition-all duration-300 inline-block"
           >
             Get Your Analysis
           </Link>
-          <Link
-            to="/how-it-works"
+          <button
+            onClick={scrollToHowItWorks}
             className="bg-transparent text-white border-2 border-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/20 transition-all duration-300 inline-block"
           >
             Learn How It Works
-          </Link>
+          </button>
         </motion.div>
       </motion.div>
     </section>
