@@ -56,6 +56,11 @@ const Navbar: React.FC = () => {
     return colors[index];
   };
 
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
@@ -65,7 +70,7 @@ const Navbar: React.FC = () => {
               src={logo}
               alt="Hairbotics"
               onError={() => setIsLogoLoaded(false)}
-              className="w-16 h-16 md:w-20 md:h-20 object-contain"
+              className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain"
             />
           ) : (
             "Hairbotics"
@@ -73,7 +78,11 @@ const Navbar: React.FC = () => {
         </Link>
 
         <div className="md:hidden">
-          <button onClick={toggleMenu} className={styles.toggleButton}>
+          <button
+            onClick={toggleMenu}
+            className={styles.toggleButton}
+            aria-label="Toggle navigation menu"
+          >
             {isMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
@@ -84,23 +93,75 @@ const Navbar: React.FC = () => {
           }`}
         >
           <li>
-            <Link to="/about" className={styles.link}>
+            <Link
+              to="/about"
+              className={styles.link}
+              onClick={() => setIsMenuOpen(false)}
+            >
               About
             </Link>
           </li>
-          <li>
-            <Link to="/pricing" className={styles.link}>
-              Pricing
+          {/* <li>
+            <Link
+              to="/services"
+              className={styles.link}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Services
             </Link>
-          </li>
+          </li> */}
           <li>
-            <Link to="/team" className={styles.link}>
+            <Link
+              to="/team"
+              className={styles.link}
+              onClick={() => setIsMenuOpen(false)}
+            >
               Team
             </Link>
           </li>
+          {isSignedIn && (
+            <li className="md:hidden">
+              <Link
+                to="/dashboard/analysis"
+                className={styles.link}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            </li>
+          )}
+          {!isSignedIn && (
+            <li className="md:hidden">
+              <button
+                className={styles.mobileActionButton}
+                onClick={() => handleNavigation("/login")}
+              >
+                Login
+              </button>
+            </li>
+          )}
+          {!isSignedIn && (
+            <li className="md:hidden">
+              <button
+                className={styles.mobileActionButton}
+                onClick={() => handleNavigation("/signup")}
+              >
+                Get Started
+              </button>
+            </li>
+          )}
         </ul>
 
-        <div className={styles.actionButtons}>
+        <div className={`${styles.actionButtons} items-center`}>
+          {isSignedIn && (
+            <button
+              className={`${styles.dashboardButton} hidden md:block`}
+              onClick={() => navigate("/dashboard/analysis")}
+            >
+              Dashboard
+            </button>
+          )}
+
           {!isSignedIn ? (
             <>
               <button
@@ -138,18 +199,9 @@ const Navbar: React.FC = () => {
                 </div>
               )}
 
-              {/* Dropdown */}
+              {/* Dropdown - simplified to only contain logout */}
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
-                  <button
-                    onClick={() => {
-                      navigate("/dashboard/analysis");
-                      setIsDropdownOpen(false);
-                    }}
-                    className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-                  >
-                    Dashboard
-                  </button>
                   <button
                     onClick={() => {
                       signOut();
