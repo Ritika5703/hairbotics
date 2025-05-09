@@ -11,7 +11,6 @@ import Footer from "../components/Footer";
 
 const AboutUs = () => {
   const howItWorksRef = useRef<HTMLDivElement>(null);
-  // Smooth scroll effect for page navigation
   useEffect(() => {
     window.scrollTo({
       top: 0,
